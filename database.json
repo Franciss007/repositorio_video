@@ -1,0 +1,60 @@
+[
+    {
+        "id": 1,
+        "title": "Acesso aos pedidos de uma rota",
+        "filename": "Acesso_aos_pedidos_de_uma_rota.mp4",
+        "category": "CD",
+        "subcategory": "GERENCIAL",
+        "tags": [
+            "Pedidos",
+            "Roteirização",
+            "Expedição"
+        ],
+        "url": "/video/stream/Acesso_aos_pedidos_de_uma_rota.mp4",
+        "vtt": "/video/stream/Acesso_aos_pedidos_de_uma_rota.vtt"
+    },
+    {
+        "id": 6,
+        "title": "Resetar a senha de usuário - PDV",
+        "filename": "Resetar_Senha_PDV.mp4",
+        "category": "EMPORIO",
+        "subcategory": "PDV",
+        "tags": [
+            "senha",
+            "pdv",
+            "usuario",
+            "resetar"
+        ],
+        "url": "/video/stream/Resetar_Senha_PDV.mp4",
+        "vtt": null
+    },
+    {
+        "id": 4,
+        "title": "Selecionar clientes na roteirização",
+        "filename": "selecionando_clientes_na_roteirizacao.mp4",
+        "category": "CD",
+        "subcategory": "GERENCIAL",
+        "tags": [
+            "busca",
+            "seleção",
+            "clientes",
+            "roteirização"
+        ],
+        "url": "/video/stream/selecionando_clientes_na_roteirizacao.mp4",
+        "vtt": "/video/stream/selecionando_clientes_na_roteirizacao.vtt"
+    },
+    {
+        "id": 3,
+        "title": "Video de como achar o mac",
+        "filename": "Video_de_como_achar_o_mac.mp4",
+        "category": "GERAL",
+        "tags": [
+            "Mac",
+            "Internet",
+            "Rede",
+            "Liberar"
+        ],
+        "url": "/video/stream/Video_de_como_achar_o_mac.mp4",
+        "vtt": null
+    }
+]
