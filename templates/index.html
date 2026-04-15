@@ -36,6 +36,7 @@
                     <p class="small fw-bold text-muted mb-2 text-uppercase">Localização</p>
                     <div class="d-flex justify-content-center gap-2 mb-3 flex-wrap">
                         <button class="btn btn-sm btn-outline-primary active" onclick="filterByCat('', this)">TODOS</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="filterByCat('GERAL', this)">GERAL</button>
                         <button class="btn btn-sm btn-outline-primary" onclick="filterByCat('EMPORIO', this)">EMPORIO</button>
                         <button class="btn btn-sm btn-outline-primary" onclick="filterByCat('CASA DE CARNE', this)">CASA DE CARNE</button>
                         <button class="btn btn-sm btn-outline-primary" onclick="filterByCat('SEDE', this)">SEDE</button>
@@ -45,6 +46,7 @@
                     <p class="small fw-bold text-muted mb-2 text-uppercase">Assunto</p>
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
                         <button class="btn btn-sm btn-outline-info active" onclick="filterBySub('', this)">TODOS</button>
+                        <button class="btn btn-sm btn-outline-info" onclick="filterBySub('GERAL', this)">GERAL</button>
                         <button class="btn btn-sm btn-outline-info" onclick="filterBySub('PDV', this)">PDV</button>
                         <button class="btn btn-sm btn-outline-info" onclick="filterBySub('RETAGUARDA', this)">RETAGUARDA</button>
                         <button class="btn btn-sm btn-outline-info" onclick="filterBySub('PARAMETRO', this)">PARAMETRO</button>
@@ -68,11 +70,12 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label small fw-bold">Local (Grupo)</label>
-                        <select id="videoCategory" class="form-select">
-                            <option value="EMPORIO">EMPORIO</option>
-                            <option value="CASA DE CARNE">CASA DE CARNE</option>
-                            <option value="SEDE">SEDE</option>
-                            <option value="CD">CD</option>
+                        <select id="videoSubCategory" class="form-select">
+                            <option value="GERAL" selected>GERAL</option>
+                            <option value="PDV">PDV</option>
+                            <option value="RETAGUARDA">RETAGUARDA</option>
+                            <option value="PARAMETRO">PARAMETRO</option>
+                            <option value="GERENCIAL">GERENCIAL</option>
                         </select>
                     </div>
                     <div class="col-md-2">

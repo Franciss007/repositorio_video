@@ -23,17 +23,16 @@ model = whisper.load_model("base")
 DB_FILE = 'database.json'
 
 def load_db():
-    """Carrega os dados do arquivo JSON"""
     if os.path.exists(DB_FILE):
         with open(DB_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
     return []
 
 def save_db(data):
-    """Salva os dados no arquivo JSON"""
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
+# Inicializa o banco
 videos_db = load_db()
 
 if not os.path.exists(UPLOAD_FOLDER):
@@ -57,7 +56,6 @@ def format_vtt_timestamp(seconds):
     return f"{hours:02d}:{minutes:02d}:{secs:02d}.{millis:03d}"
 
 def generate_subtitles(video_path, filename):
-    """Gera legenda VTT automaticamente"""
     try:
         print(f"Gerando legendas para: {filename}...")
         vtt_filename = filename.rsplit('.', 1)[0] + ".vtt"
@@ -79,8 +77,9 @@ def generate_subtitles(video_path, filename):
         return None
     
 def sync_database():
-    """Sincroniza arquivos da pasta com o JSON sem perder dados existentes"""
     global videos_db
+    if not os.path.exists(UPLOAD_FOLDER): return
+    
     files = [f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith('.mp4')]
     db_filenames = {v['filename']: v for v in videos_db}
     new_db = []
@@ -89,11 +88,13 @@ def sync_database():
         if f in db_filenames:
             new_db.append(db_filenames[f])
         else:
+            # Caso caia um arquivo novo na pasta, assume GERAL/GERAL
             video_entry = {
-                "id": len(new_db) + 1,
+                "id": int(datetime.datetime.now().timestamp()),
                 "title": f.replace('_', ' ').replace('.mp4', ''),
                 "filename": f,
                 "category": "GERAL",
+                "subcategory": "GERAL",
                 "tags": ["interno"],
                 "url": f"/video/stream/{f}",
                 "vtt": f"/video/stream/{f.rsplit('.', 1)[0] + '.vtt'}" if os.path.exists(os.path.join(UPLOAD_FOLDER, f.rsplit('.', 1)[0] + '.vtt')) else None
@@ -102,6 +103,7 @@ def sync_database():
     
     videos_db = new_db
     save_db(videos_db) 
+
 sync_database()
 
 @app.route('/')
@@ -110,12 +112,11 @@ def index(): return render_template('index.html')
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
+    # Senha fr1b4l atualizada conforme seu código
     if data.get('user') == 'admin' and data.get('pass') == 'fr1b4l':
         session['auth'] = True
         return jsonify({"status": "logado"})
     return jsonify({"error": "Dados inválidos"}), 401
-
-CATEGORIES = ["GERAL", "PDV", "RETAGUARDA", "GERENCIAL", "PARAMETRO"]
 
 @app.route('/upload', methods=['POST'])
 @login_required
@@ -134,11 +135,11 @@ def upload_video():
     vtt_url = generate_subtitles(filepath, filename) if generate_cap else None
     
     video_entry = {
-        "id": len(videos_db) + 1,
+        "id": int(datetime.datetime.now().timestamp()),
         "title": title or filename,
         "filename": filename,
         "category": category,
-        "subcategory":subcategory,
+        "subcategory": subcategory,
         "tags": [t.strip().lower() for t in tags.split(',') if t.strip()],
         "url": f"/video/stream/{filename}",
         "vtt": vtt_url
@@ -150,7 +151,9 @@ def upload_video():
 
 @app.route('/view/<int:video_id>')
 def view_video(video_id):
-    video = next((v for v in videos_db if v['id'] == video_id), None)
+    # Carrega do DB para garantir que o ID exista após reboot
+    current_db = load_db()
+    video = next((v for v in current_db if v['id'] == video_id), None)
     if video:
         return render_template('player.html', video=video)
     return "Vídeo não encontrado", 404
@@ -170,12 +173,14 @@ def save_subtitles():
 
     if not filename_url or not content:
         return jsonify({"error": "Dados insuficientes"}), 400
+    
     clean_vtt_name = filename_url.split('/')[-1]
     vtt_path = os.path.join(app.config['UPLOAD_FOLDER'], clean_vtt_name)
     
     try:
         with open(vtt_path, "w", encoding="utf-8") as f:
             f.write(content)
+        
         corresponding_mp4 = clean_vtt_name.replace('.vtt', '.mp4')
         
         global videos_db
@@ -189,7 +194,6 @@ def save_subtitles():
             save_db(videos_db)
         return jsonify({"status": "Legenda atualizada e salva no banco!"})
     except Exception as e:
-        print(f"Erro ao salvar legenda: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/videos')
@@ -198,10 +202,8 @@ def list_videos():
     cat_filter = request.args.get('cat', '').upper().strip()
     sub_filter = request.args.get('sub', '').upper().strip()
     
-    filtered = load_db()
-    
-    global videos_db
     filtered = videos_db
+    
     if cat_filter:
         filtered = [v for v in filtered if v.get('category', '').upper() == cat_filter]
     if sub_filter:
@@ -216,4 +218,4 @@ def list_videos():
     return jsonify(filtered)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8090)
+    app.run(host='0.0.0.0', port=8090, debug=False)
