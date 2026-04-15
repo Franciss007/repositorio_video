@@ -33,7 +33,7 @@
                 <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm mb-4" placeholder="🔍 Pesquisar por título ou tags...">
                 
                 <div class="text-center mb-4">
-                    <p class="small fw-bold text-muted mb-2 text-uppercase">Localização</p>
+                    <p class="small fw-bold text-muted mb-2 text-uppercase">Localização (Grupo)</p>
                     <div class="d-flex justify-content-center gap-2 mb-3 flex-wrap">
                         <button class="btn btn-sm btn-outline-primary active" onclick="filterByCat('', this)">TODOS</button>
                         <button class="btn btn-sm btn-outline-primary" onclick="filterByCat('GERAL', this)">GERAL</button>
@@ -43,7 +43,7 @@
                         <button class="btn btn-sm btn-outline-primary" onclick="filterByCat('CD', this)">CD</button>
                     </div>
 
-                    <p class="small fw-bold text-muted mb-2 text-uppercase">Assunto</p>
+                    <p class="small fw-bold text-muted mb-2 text-uppercase">Assunto (Categoria)</p>
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
                         <button class="btn btn-sm btn-outline-info active" onclick="filterBySub('', this)">TODOS</button>
                         <button class="btn btn-sm btn-outline-info" onclick="filterBySub('GERAL', this)">GERAL</button>
@@ -69,17 +69,17 @@
                         <input type="text" id="videoTitle" class="form-control" placeholder="Título">
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label small fw-bold">Local (Grupo)</label>
-                        <select id="videoSubCategory" class="form-select">
+                        <label class="form-label small fw-bold">Grupo (Local)</label>
+                        <select id="videoCategory" class="form-select">
                             <option value="GERAL" selected>GERAL</option>
-                            <option value="PDV">PDV</option>
-                            <option value="RETAGUARDA">RETAGUARDA</option>
-                            <option value="PARAMETRO">PARAMETRO</option>
-                            <option value="GERENCIAL">GERENCIAL</option>
+                            <option value="EMPORIO">EMPORIO</option>
+                            <option value="CASA DE CARNE">CASA DE CARNE</option>
+                            <option value="SEDE">SEDE</option>
+                            <option value="CD">CD</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label small fw-bold">Assunto (Categoria)</label>
+                        <label class="form-label small fw-bold">Categoria (Assunto)</label>
                         <select id="videoSubCategory" class="form-select">
                             <option value="GERAL" selected>GERAL</option>
                             <option value="PDV">PDV</option>
@@ -124,7 +124,7 @@
     <div class="modal fade" id="editSubtitleModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header"><h5>Editor de Legenda (VTT)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5>Editar Legenda</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body"><textarea id="vttEditor" class="form-control" rows="15" style="font-family: monospace;"></textarea></div>
                 <div class="modal-footer"><button type="button" id="saveVttBtn" class="btn btn-primary">Salvar Alterações</button></div>
             </div>
@@ -160,7 +160,7 @@
 
         async function loadVideos() {
             const query = document.getElementById('searchInput').value.trim();
-            // CORREÇÃO: Template string com os filtros corretos
+            // CORREÇÃO: Usando a variável global correta
             const res = await fetch(`/videos?q=${query}&cat=${currentCategory}&sub=${currentSubCategory}`);
             const videos = await res.json();
             const container = document.getElementById('videoList');
@@ -186,10 +186,10 @@
                             <div class="mb-3">
                                 ${v.tags ? v.tags.map(t => `<span class="badge bg-light text-dark border me-1 small">${t}</span>`).join('') : ''}
                             </div>
-                            <div class="mt-auto">
+                            <div class="mt-auto pt-2 border-top">
                                 <div class="input-group input-group-sm mb-2">
                                     <input type="text" class="form-control" value="${window.location.origin}/view/${v.id}" id="link-${v.id}" readonly>
-                                    <button class="btn btn-outline-primary" onclick="copyLink('${v.id}')">Copiar</button>
+                                    <button class="btn btn-primary" onclick="copyLink('${v.id}')">Copiar</button>
                                 </div>
                                 ${v.vtt && isAuthenticated ? `<button class="btn btn-sm btn-warning w-100" onclick="openSubtitleEditor('${v.vtt}')">✏️ Editar Legenda</button>` : ''}
                             </div>
