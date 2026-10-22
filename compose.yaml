@@ -1,0 +1,25 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${PORT_EXTERNAL:-5030}:8090"
+    environment:
+      - PORT=8090
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - FLASK_DEBUG=${FLASK_DEBUG:-0}
+    volumes:
+      - ./uploads:/app/uploads
+      - ./database.json:/app/database.json
+      - whisper_cache:/root/.cache/whisper
+    networks:
+      - videos_net
+
+volumes:
+  whisper_cache:
+
+networks:
+  videos_net:
+    driver: bridge
