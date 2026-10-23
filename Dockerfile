@@ -3,14 +3,17 @@ FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PORT=8090
+    PORT=8090 \
+    TZ=America/Sao_Paulo
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
+    tzdata \
     curl \
     git \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -28,4 +31,3 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
 
 # Timeout estendido (300s) para processamento de videos e transcricao Whisper
 CMD ["gunicorn", "--bind", "0.0.0.0:8090", "--workers", "1", "--timeout", "300", "app:app"]
-
